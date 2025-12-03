@@ -1,0 +1,46 @@
+bedrooms
+bathrooms
+size_sqft
+min_to_subway
+floor
+building_age_yrs
+no_fee
+has_roofdeck
+has_washer_dryer
+has_doorman
+has_elevator
+has_dishwasher
+has_patio
+has_gym
+neighborhood_Battery Park City
+neighborhood_Central Harlem
+neighborhood_Central Park South
+neighborhood_Chelsea
+neighborhood_Chinatown
+neighborhood_East Harlem
+neighborhood_East Village
+neighborhood_Financial District
+neighborhood_Flatiron
+neighborhood_Gramercy Park
+neighborhood_Greenwich Village
+neighborhood_Hamilton Heights
+neighborhood_Inwood
+neighborhood_Little Italy
+neighborhood_Long Island City
+neighborhood_Lower East Side
+neighborhood_Manhattanville
+neighborhood_Midtown
+neighborhood_Midtown East
+neighborhood_Midtown South
+neighborhood_Midtown West
+neighborhood_Morningside Heights
+neighborhood_Nolita
+neighborhood_Roosevelt Island
+neighborhood_Soho
+neighborhood_Stuyvesant Town/PCV
+neighborhood_Tribeca
+neighborhood_Upper East Side
+neighborhood_Upper West Side
+neighborhood_Washington Heights
+neighborhood_West Harlem
+neighborhood_West Village
