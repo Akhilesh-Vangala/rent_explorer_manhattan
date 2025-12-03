@@ -35,6 +35,7 @@ def preprocess(df, train: bool=False):
     df = cast_types(df)
     df = handle_outliers(df)
     df = encode_categoricals(df)
-    if not train:
-        df = feature_engineering(df)
+    df = feature_engineering(df)
+    if train:
+        df = df.drop(columns=[FEATURE_CONSTANTS.LOG_RENT, FEATURE_CONSTANTS.RENT_PER_SQFT], errors='ignore')
     return df

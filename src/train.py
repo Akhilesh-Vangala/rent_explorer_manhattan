@@ -10,7 +10,7 @@ import pandas as pd
 import joblib
 from src.config.config import Config
 from src.utils import load_data
-from src.modeling import train_test_split_df, train_model, evaluate_model, get_cv_metrics, print_model_metrics
+from src.modeling import train_test_split_df, train_model, evaluate_model, get_cv_metrics, print_model_metrics, save_training_visualizations
 
 def main():
     print('=' * 70)
@@ -25,13 +25,13 @@ def main():
     print(f'   Validation: {len(X_val)} samples')
     print(f'   Test: {len(X_test)} samples')
     print('\n[STEP 3] Training models...')
-    (lr_model, lr_time) = train_model('linear_regression', X_train, y_train)
+    (lr_model, lr_time, lr_loss_history) = train_model('linear_regression', X_train, y_train, X_val, y_val)
     lr_metrics = {'train': evaluate_model(lr_model, X_train, y_train), 'val': evaluate_model(lr_model, X_val, y_val), 'test': evaluate_model(lr_model, X_test, y_test), 'time': lr_time}
     print_model_metrics(lr_metrics)
-    (rf_model, rf_time) = train_model('random_forest', X_train, y_train)
+    (rf_model, rf_time, rf_loss_history) = train_model('random_forest', X_train, y_train, X_val, y_val)
     rf_metrics = {'train': evaluate_model(rf_model, X_train, y_train), 'val': evaluate_model(rf_model, X_val, y_val), 'test': evaluate_model(rf_model, X_test, y_test), 'time': rf_time}
     print_model_metrics(rf_metrics)
-    (xgb_model, xgb_time) = train_model('xgboost', X_train, y_train)
+    (xgb_model, xgb_time, xgb_loss_history) = train_model('xgboost', X_train, y_train, X_val, y_val)
     xgb_metrics = {'train': evaluate_model(xgb_model, X_train, y_train), 'val': evaluate_model(xgb_model, X_val, y_val), 'test': evaluate_model(xgb_model, X_test, y_test), 'time': xgb_time}
     print_model_metrics(xgb_metrics)
     if hasattr(xgb_model, 'best_iteration'):
@@ -102,5 +102,15 @@ def main():
     print(f"   Test RMSE: ${xgb_metrics['test']['rmse']:.2f}")
     print(f"   Test MAE: ${xgb_metrics['test']['mae']:.2f}")
     print(f'   Overfitting gap: {xgb_train_test_gap * 100:.2f}%')
+    
+    save_training_visualizations(
+        models={'linear_regression': lr_model, 'random_forest': rf_model, 'xgboost': xgb_model},
+        all_metrics={'linear_regression': lr_metrics, 'random_forest': rf_metrics, 'xgboost': xgb_metrics},
+        X_train=X_train, y_train=y_train,
+        X_val=X_val, y_val=y_val,
+        X_test=X_test, y_test=y_test,
+        cv_metrics=xgb_cv_metrics,
+        loss_histories={'linear_regression': lr_loss_history, 'random_forest': rf_loss_history, 'xgboost': xgb_loss_history}
+    )
 if __name__ == '__main__':
     main()

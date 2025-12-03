@@ -1,17 +1,17 @@
 Model: XGBoost
-Train R2: 0.920773
-Train RMSE: 877.69
-Train MAE: 556.21
-Validation R2: 0.886755
-Validation RMSE: 1129.83
-Validation MAE: 689.87
-Test R2: 0.813726
-Test RMSE: 1363.18
-Test MAE: 766.90
-Train-Test R2 Gap: 0.107046
-CV R2 Mean: 0.848444
-CV R2 Std: 0.006216
-CV RMSE Mean: 1209.77
-CV RMSE Std: 85.53
-CV MAE Mean: 719.84
-CV MAE Std: 33.88
+Train R2: 0.920767
+Train RMSE: 877.72
+Train MAE: 551.54
+Validation R2: 0.888902
+Validation RMSE: 1119.06
+Validation MAE: 676.38
+Test R2: 0.811953
+Test RMSE: 1369.66
+Test MAE: 761.90
+Train-Test R2 Gap: 0.108815
+CV R2 Mean: 0.848748
+CV R2 Std: 0.006884
+CV RMSE Mean: 1208.61
+CV RMSE Std: 87.82
+CV MAE Mean: 718.73
+CV MAE Std: 36.46

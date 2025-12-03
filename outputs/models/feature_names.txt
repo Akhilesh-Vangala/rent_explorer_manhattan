@@ -44,3 +44,4 @@ neighborhood_Upper West Side
 neighborhood_Washington Heights
 neighborhood_West Harlem
 neighborhood_West Village
+log_size_sqft
