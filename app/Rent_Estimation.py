@@ -5,14 +5,17 @@ import sys
 import traceback
 from pathlib import Path
 
+# CRITICAL: st.set_page_config MUST be the first Streamlit command
+st.set_page_config(page_title='Rent Estimation Tool', page_icon=None, layout='wide', initial_sidebar_state='expanded')
+
 # Setup paths FIRST before any other imports
 try:
     from app.path_setup import setup_paths
     base_dir = setup_paths()
-    st.write(f"Base directory: {base_dir}")  # Debug info
 except Exception as e:
     st.error(f"Path setup failed: {str(e)}")
-    st.code(traceback.format_exc())
+    with st.expander("Error Details"):
+        st.code(traceback.format_exc())
     st.stop()
 
 # Import after path setup
@@ -21,12 +24,10 @@ try:
     from app.shared_styles import apply_shared_styles
 except Exception as e:
     st.error(f"Import failed: {str(e)}")
-    st.code(traceback.format_exc())
-    st.code(f"Python path: {sys.path}")
+    with st.expander("Error Details"):
+        st.code(traceback.format_exc())
+        st.code(f"Python path: {sys.path[:5]}")
     st.stop()
-
-# Page config
-st.set_page_config(page_title='Rent Estimation Tool', page_icon=None, layout='wide', initial_sidebar_state='expanded')
 
 # Apply styles
 try:
@@ -37,29 +38,35 @@ except Exception as e:
 # Load data and model with error handling
 try:
     from src.config.config import Config
-    st.write(f"Data file path: {Config.RAW_DATA_FILE}")
-    st.write(f"Model file path: {Config.BEST_MODEL_FILE}")
-    st.write(f"Data exists: {Config.RAW_DATA_FILE.exists()}")
-    st.write(f"Model exists: {Config.BEST_MODEL_FILE.exists()}")
+    
+    # Debug info in expander (optional to view)
+    with st.expander("🔍 Debug Info (click to view)", expanded=False):
+        st.write(f"Base directory: {Config.BASE_DIR}")
+        st.write(f"Data file path: {Config.RAW_DATA_FILE}")
+        st.write(f"Model file path: {Config.BEST_MODEL_FILE}")
+        st.write(f"Data exists: {Config.RAW_DATA_FILE.exists()}")
+        st.write(f"Model exists: {Config.BEST_MODEL_FILE.exists()}")
+        st.write(f"Current directory: {Path.cwd()}")
     
     model = load_model()
-    st.success("Model loaded successfully!")
-    
     (df_raw, df_preprocessed) = load_data()
-    st.success("Data loaded successfully!")
-    
     neighborhoods = get_neighborhoods(df_preprocessed)
-    st.success(f"Found {len(neighborhoods)} neighborhoods!")
     
 except FileNotFoundError as e:
-    st.error(f"File not found: {str(e)}")
-    st.code(traceback.format_exc())
+    st.error(f"❌ File not found: {str(e)}")
+    with st.expander("Error Details"):
+        st.code(traceback.format_exc())
+        st.write(f"Looking for files in: {Config.BASE_DIR if 'Config' in dir() else 'Unknown'}")
     st.stop()
 except Exception as e:
-    st.error(f"Error loading app: {str(e)}")
-    st.code(traceback.format_exc())
-    st.code(f"Current directory: {Path.cwd()}")
-    st.code(f"Python path: {sys.path[:5]}")
+    st.error(f"❌ Error loading app: {str(e)}")
+    with st.expander("Error Details"):
+        st.code(traceback.format_exc())
+        try:
+            st.write(f"Current directory: {Path.cwd()}")
+            st.write(f"Python path (first 5): {sys.path[:5]}")
+        except:
+            pass
     st.stop()
 AFFORDABILITY_CRITERIA = {-15: ['Major Affordable', '#10b981'], -5: ['Affordable', '#34d399'], 5: ['Fairly Priced', '#fbbf24'], 15: ['Premium', '#f97316']}
 with st.sidebar:
