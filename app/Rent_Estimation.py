@@ -1,28 +1,65 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import sys
+import traceback
+from pathlib import Path
 
-# Setup paths first
-from app.path_setup import setup_paths
-setup_paths()
+# Setup paths FIRST before any other imports
+try:
+    from app.path_setup import setup_paths
+    base_dir = setup_paths()
+    st.write(f"Base directory: {base_dir}")  # Debug info
+except Exception as e:
+    st.error(f"Path setup failed: {str(e)}")
+    st.code(traceback.format_exc())
+    st.stop()
 
 # Import after path setup
-from src.utils import load_data, load_model, get_neighborhoods
-from app.shared_styles import apply_shared_styles
+try:
+    from src.utils import load_data, load_model, get_neighborhoods
+    from app.shared_styles import apply_shared_styles
+except Exception as e:
+    st.error(f"Import failed: {str(e)}")
+    st.code(traceback.format_exc())
+    st.code(f"Python path: {sys.path}")
+    st.stop()
 
 # Page config
 st.set_page_config(page_title='Rent Estimation Tool', page_icon=None, layout='wide', initial_sidebar_state='expanded')
 
 # Apply styles
-apply_shared_styles()
+try:
+    apply_shared_styles()
+except Exception as e:
+    st.warning(f"Style loading failed: {str(e)}")
 
 # Load data and model with error handling
 try:
+    from src.config.config import Config
+    st.write(f"Data file path: {Config.RAW_DATA_FILE}")
+    st.write(f"Model file path: {Config.BEST_MODEL_FILE}")
+    st.write(f"Data exists: {Config.RAW_DATA_FILE.exists()}")
+    st.write(f"Model exists: {Config.BEST_MODEL_FILE.exists()}")
+    
     model = load_model()
+    st.success("Model loaded successfully!")
+    
     (df_raw, df_preprocessed) = load_data()
+    st.success("Data loaded successfully!")
+    
     neighborhoods = get_neighborhoods(df_preprocessed)
+    st.success(f"Found {len(neighborhoods)} neighborhoods!")
+    
+except FileNotFoundError as e:
+    st.error(f"File not found: {str(e)}")
+    st.code(traceback.format_exc())
+    st.stop()
 except Exception as e:
     st.error(f"Error loading app: {str(e)}")
+    st.code(traceback.format_exc())
+    st.code(f"Current directory: {Path.cwd()}")
+    st.code(f"Python path: {sys.path[:5]}")
     st.stop()
 AFFORDABILITY_CRITERIA = {-15: ['Major Affordable', '#10b981'], -5: ['Affordable', '#34d399'], 5: ['Fairly Priced', '#fbbf24'], 15: ['Premium', '#f97316']}
 with st.sidebar:
