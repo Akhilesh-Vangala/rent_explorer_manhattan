@@ -1,15 +1,29 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+
+# Setup paths first
 from app.path_setup import setup_paths
 setup_paths()
+
+# Import after path setup
 from src.utils import load_data, load_model, get_neighborhoods
 from app.shared_styles import apply_shared_styles
+
+# Page config
 st.set_page_config(page_title='Rent Estimation Tool', page_icon=None, layout='wide', initial_sidebar_state='expanded')
+
+# Apply styles
 apply_shared_styles()
-model = load_model()
-(df_raw, df_preprocessed) = load_data()
-neighborhoods = get_neighborhoods(df_preprocessed)
+
+# Load data and model with error handling
+try:
+    model = load_model()
+    (df_raw, df_preprocessed) = load_data()
+    neighborhoods = get_neighborhoods(df_preprocessed)
+except Exception as e:
+    st.error(f"Error loading app: {str(e)}")
+    st.stop()
 AFFORDABILITY_CRITERIA = {-15: ['Major Affordable', '#10b981'], -5: ['Affordable', '#34d399'], 5: ['Fairly Priced', '#fbbf24'], 15: ['Premium', '#f97316']}
 with st.sidebar:
     st.markdown('\n    <div class="sidebar-header" style="margin-bottom: 0.5rem;">\n        <div style="font-size: 1rem; font-weight: 700; color: #93c5fd; margin-bottom: 0.1rem; padding-bottom: 0.15rem;">Content</div>\n        <div style="font-size: 0.8rem; color: #cbd5e1; margin-bottom: 0.1rem; line-height: 1.3;">Use the pages below to explore different aspects of the rental prediction system.</div>\n    </div>\n    ', unsafe_allow_html=True)
